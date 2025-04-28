@@ -1,56 +1,95 @@
-# Text Summarization using Google's FLAN-T5 Model
+# Text Summarization with Google T5
 
-This project demonstrates how to use Google's FLAN-T5 model for text summarization using the Hugging Face Transformers library.
+This project provides a simple utility for summarizing text using Google's T5 model. It allows you to summarize text from a file using customizable prompts and parameters.
+
+## Features
+
+- Summarize text from files or use an example text
+- Customize summarization prompts
+- Adjust minimum and maximum summary length
+- Control generation parameters (temperature, beam search)
+- Select different T5 model variants
+- Error handling and formatted output
 
 ## Requirements
 
-- Python 3.x
-- transformers
-- numpy
+Install the required dependencies:
 
-Install the required packages:
--bash
--pip install transformers numpy
+```bash
+pip install transformers torch numpy
+```
 
 ## Usage
 
-1. Import the necessary modules:
-   ```python
-   from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-   import numpy as np
-   ```
+Basic usage with default parameters:
 
-2. Set the checkpoint for the pre-trained model:
-   ```python
-   checkpoint = "google/flan-t5-small"
-   ```
+```bash
+python "Summarisation Using Google T5.py"
+```
 
-3. Prepare your text to be summarized.
+Summarize text from a file:
 
-4. Load the tokenizer and model:
-   ```python
-   tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-   model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
-   ```
+```bash
+python "Summarisation Using Google T5.py" --file sample_text.txt
+```
 
-5. Tokenize the input text:
-   ```python
-   summarization_input = "summarize: " + your_text
-   tokens_input = tokenizer.encode(summarization_input, return_tensors="pt", truncation=True)
-   ```
+Customize the summarization:
 
-6. Generate the summary:
-   ```python
-   summary_ids = model.generate(tokens_input, min_length=40, max_length=130)
-   summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-   ```
+```bash
+python "Summarisation Using Google T5.py" --file sample_text.txt --prompt "provide a detailed summary of" --min_length 100 --max_length 200
+```
 
-7. Print the summary.
+Control generation parameters:
 
-## Example
+```bash
+python "Summarisation Using Google T5.py" --file sample_text.txt --temperature 0.8 --num_beams 5
+```
 
-The provided code includes an example text about large language models and their carbon footprint. Run the script to see the summarization in action.
+Use a different T5 model variant:
 
-## Note
+```bash
+python "Summarisation Using Google T5.py" --model google/flan-t5-large
+```
 
-This example uses the "google/flan-t5-small" model. You can experiment with other T5 variants by changing the `checkpoint` variable.
+## Available Arguments
+
+- `--file`: Path to input text file (optional)
+- `--prompt`: Custom prompt for summarization (default: "summarize")
+- `--min_length`: Minimum summary length (default: 40)
+- `--max_length`: Maximum summary length (default: 150)
+- `--temperature`: Sampling temperature (default: 0.7)
+- `--num_beams`: Number of beams for beam search (default: 4)
+- `--model`: Model checkpoint to use (default: google/flan-t5-base)
+
+## Examples of Custom Prompts
+
+- `summarize`
+- `provide a detailed summary of`
+- `explain the key points in`
+- `what are the main ideas in`
+- `create a concise summary of`
+- `extract the most important information from`
+
+## Available T5 Models
+
+- `google/flan-t5-small` (smallest, fastest)
+- `google/flan-t5-base` (default)
+- `google/flan-t5-large`
+- `google/flan-t5-xl`
+- `google/flan-t5-xxl` (largest, best quality)
+
+Note: Larger models provide better quality summaries but require more computational resources.
+
+## Understanding Parameters
+
+- **Temperature**: Controls randomness in generation. Lower values (e.g., 0.3) give more deterministic outputs, while higher values (e.g., 0.9) produce more diverse summaries.
+- **Number of beams**: Controls the beam search algorithm. Higher values explore more possibilities and generally produce better summaries but take longer to generate.
+- **Min/Max length**: Control the length of the generated summary in tokens.
+
+## Error Handling
+
+The script includes error handling for:
+- Invalid file paths
+- Model loading issues
+- Summarization errors
+- File reading problems
